@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-// import "./globals.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "webdev a1",
+  title: "CS5610 webdev",
 };
 
 export default function RootLayout({
