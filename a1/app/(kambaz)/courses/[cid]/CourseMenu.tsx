@@ -1,41 +1,50 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const LINKS = [
+  { segment: "home", id: "wd-course-home-link", label: "Home" },
+  { segment: "modules", id: "wd-course-modules-link", label: "Modules" },
+  { segment: "piazza", id: "wd-course-piazza-link", label: "Piazza" },
+  { segment: "zoom", id: "wd-course-zoom-link", label: "Zoom" },
+  { segment: "assignments", id: "wd-course-assignments-link", label: "Assignments" },
+  { segment: "quizzes", id: "wd-course-quizzes-link", label: "Quizzes" },
+  { segment: "grades", id: "wd-course-grades-link", label: "Grades" },
+  { segment: "people", id: "wd-course-people-link", label: "People" },
+] as const;
 
 export default function CourseMenu({ courseKey }: { courseKey: string }) {
-  const root = `/courses/${courseKey}`;
+  const pathname = usePathname() ?? "";
+  const inCourse = pathname.startsWith(`/courses/${courseKey}`);
+
   return (
     <div id="wd-courses">
-      <div id="wd-courses-navigation">
-        <Link href={`${root}/home`} id="wd-course-home-link">
-          Home
-        </Link>
-        <br />
-        <Link href={`${root}/modules`} id="wd-course-modules-link">
-          Modules
-        </Link>
-        <br />
-        <Link href={`${root}/piazza`} id="wd-course-piazza-link">
-          Piazza
-        </Link>
-        <br />
-        <Link href={`${root}/zoom`} id="wd-course-zoom-link">
-          Zoom
-        </Link>
-        <br />
-        <Link href={`${root}/assignments`} id="wd-course-assignments-link">
-          Assignments
-        </Link>
-        <br />
-        <Link href={`${root}/quizzes`} id="wd-course-quizzes-link">
-          Quizzes
-        </Link>
-        <br />
-        <Link href={`${root}/grades`} id="wd-course-grades-link">
-          Grades
-        </Link>
-        <br />
-        <Link href={`${root}/people`} id="wd-course-people-link">
-          People
-        </Link>
+      <div
+        id="wd-courses-navigation"
+        className="wd list-group rounded-none text-lg"
+      >
+        {LINKS.map(({ segment, id, label }) => {
+          const href = `/courses/${courseKey}/${segment}`;
+          const active = inCourse
+            ? pathname === href ||
+              (segment !== "home" && pathname.startsWith(href))
+            : segment === "home";
+          return (
+            <Link
+              key={id}
+              href={href}
+              id={id}
+              className={
+                active
+                  ? "list-group-item active border-0"
+                  : "list-group-item border-0 text-red-600"
+              }
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
