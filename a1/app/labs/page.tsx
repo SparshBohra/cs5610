@@ -16,6 +16,11 @@ export default function Labs() {
           </Link>
         </li>
         <li>
+          <Link href="/labs/lab3" className="text-red-600 no-underline">
+            Lab 3
+          </Link>
+        </li>
+        <li>
           <Link href="/dashboard" className="text-red-600 no-underline">
             Kambaz
           </Link>

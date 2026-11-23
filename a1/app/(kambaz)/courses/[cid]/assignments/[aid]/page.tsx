@@ -1,27 +1,31 @@
 import Link from "next/link";
+import { assignments } from "../../../../database";
 
 export default async function EditorScreen({
   params,
 }: {
   params: Promise<{ cid: string; aid: string }>;
 }) {
-  const { cid: courseKey } = await params;
+  const { cid: courseKey, aid } = await params;
+  const assignment = assignments.find((a) => a._id === aid);
   const back = `/courses/${courseKey}/assignments`;
   return (
     <div id="wd-assignments-editor" className="max-w-2xl">
-      <h1 className="mb-4 text-2xl font-semibold">Assignment</h1>
+      <h1 className="mb-4 text-2xl font-semibold">
+        {assignment?.title ?? "Assignment"}
+      </h1>
       <label htmlFor="wd-name" className="mb-1 block text-sm font-medium">
         Assignment Name
       </label>
       <input
         id="wd-name"
-        defaultValue="A1"
+        defaultValue={assignment?.title ?? ""}
         className="mb-4 w-full rounded border border-neutral-300 px-3 py-2"
       />
       <textarea
         id="wd-description"
         rows={8}
-        defaultValue="The assignment is available online Submit a link to the landing page."
+        defaultValue={assignment?.description ?? ""}
         className="mb-4 w-full rounded border border-neutral-300 px-3 py-2"
       />
       <div className="mb-3 flex items-center gap-3">
@@ -30,7 +34,7 @@ export default async function EditorScreen({
         </label>
         <input
           id="wd-points"
-          defaultValue="100"
+          defaultValue={assignment?.points ?? 100}
           className="w-40 rounded border border-neutral-300 px-3 py-2"
         />
       </div>
@@ -41,6 +45,7 @@ export default async function EditorScreen({
         <input
           type="date"
           id="wd-due-date"
+          defaultValue={assignment?.due}
           className="rounded border border-neutral-300 px-3 py-2"
         />
       </div>
@@ -51,6 +56,7 @@ export default async function EditorScreen({
         <input
           type="date"
           id="wd-available-from"
+          defaultValue={assignment?.available}
           className="rounded border border-neutral-300 px-3 py-2"
         />
       </div>

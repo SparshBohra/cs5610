@@ -1,7 +1,16 @@
+import { modules } from "../../../database";
 import Module from "./Module";
 import Lesson from "./Lesson";
 
-export default function Modules() {
+export default async function Modules({
+  params,
+}: {
+  params: Promise<{ cid: string }>;
+}) {
+  const { cid } = await params;
+  // only modules for this course id
+  const courseMods = modules.filter((m) => m.course === cid);
+
   return (
     <div className="wd-modules">
       <div id="wd-modules-controls" className="mb-4 flex flex-wrap gap-2">
@@ -26,22 +35,15 @@ export default function Modules() {
         </button>
       </div>
       <ul id="wd-modules" className="m-0 list-none p-0">
-        <Module title="Week 1, Lecture 1 - Course Introduction, Syllabus, Agenda">
-          <Lesson title="LEARNING OBJECTIVES">
-            <li>Introduction to the course</li>
-            <li>Learn what is Web Development</li>
-          </Lesson>
-          <Lesson title="READING">
-            <li>Full Stack Developer - Chapter 1 - Introduction</li>
-          </Lesson>
-          <Lesson title="SLIDES">
-            <li>Introduction to Web Development</li>
-          </Lesson>
-        </Module>
-        <Module title="Week 1, Lecture 2 - Formatting User Interfaces with HTML">
-          <Lesson title="LEARNING OBJECTIVES" />
-          <Lesson title="READING" />
-        </Module>
+        {courseMods.map((mod) => (
+          <Module key={mod._id} title={mod.name}>
+            <Lesson title={mod.description}>
+              {mod.lessons.map((lesson) => (
+                <li key={lesson._id}>{lesson.name}</li>
+              ))}
+            </Lesson>
+          </Module>
+        ))}
       </ul>
     </div>
   );

@@ -1,39 +1,21 @@
 import { FaUserCircle } from "react-icons/fa";
+import { enrollments, users } from "../../../../database";
 
-const PEOPLE = [
-  {
-    firstName: "Sparsh",
-    lastName: "Bohra",
-    loginId: "bohra.s",
-    section: "S101",
-    role: "STUDENT",
-    lastActivity: "2026-10-10",
-    totalActivity: "10:22:30",
-  },
-  {
-    firstName: "Alice",
-    lastName: "Wonderland",
-    loginId: "001234561S",
-    section: "S101",
-    role: "STUDENT",
-    lastActivity: "2020-01-01",
-    totalActivity: "10:21:32",
-  },
-  {
-    firstName: "Harry",
-    lastName: "Potter",
-    loginId: "1234FHDJFW",
-    section: "S101",
-    role: "STUDENT",
-    lastActivity: "2020-02-01",
-    totalActivity: "12:22:32",
-  },
-];
+export default async function PeopleTable({
+  params,
+}: {
+  params: Promise<{ cid: string }>;
+}) {
+  const { cid } = await params;
+  // keep users who are enrolld in this course
+  const enrolled = users.filter((user) =>
+    enrollments.some(
+      (enrollment) => enrollment.user === user._id && enrollment.course === cid,
+    ),
+  );
 
-export default function People() {
   return (
     <div id="wd-people-table" className="overflow-x-auto">
-      <h1 className="mb-4 text-2xl font-semibold">People</h1>
       <table className="w-full border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-neutral-300">
@@ -46,8 +28,8 @@ export default function People() {
           </tr>
         </thead>
         <tbody>
-          {PEOPLE.map((user) => (
-            <tr key={user.loginId} className="odd:bg-neutral-50">
+          {enrolled.map((user) => (
+            <tr key={user._id} className="odd:bg-neutral-50">
               <td className="wd-full-name p-2 text-nowrap">
                 <FaUserCircle className="me-2 inline align-middle text-3xl text-neutral-500" />
                 <span className="wd-first-name">{user.firstName}</span>{" "}

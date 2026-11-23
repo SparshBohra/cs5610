@@ -1,4 +1,6 @@
+import { courses } from "../../database";
 import CourseMenu from "./CourseMenu";
+import CourseTitle from "./CourseTitle";
 
 export default async function CourseFrame({
   children,
@@ -8,11 +10,11 @@ export default async function CourseFrame({
   params: Promise<{ cid: string }>;
 }) {
   const { cid: courseKey } = await params;
+  const course = courses.find((c) => c._id === courseKey);
+  const courseName = course?.name ?? courseKey;
   return (
     <div id="wd-courses">
-      <h2 className="mb-3 text-2xl font-semibold text-red-600">
-        Course {courseKey}
-      </h2>
+      <CourseTitle courseName={courseName} />
       <hr className="my-3" />
       <div className="flex gap-4">
         <div className="hidden w-[140px] shrink-0 md:block">

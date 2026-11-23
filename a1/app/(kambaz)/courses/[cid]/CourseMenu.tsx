@@ -11,8 +11,9 @@ const LINKS = [
   { segment: "assignments", id: "wd-course-assignments-link", label: "Assignments" },
   { segment: "quizzes", id: "wd-course-quizzes-link", label: "Quizzes" },
   { segment: "grades", id: "wd-course-grades-link", label: "Grades" },
-  { segment: "people", id: "wd-course-people-link", label: "People" },
+  { segment: "people/table", id: "wd-course-people-link", label: "People" },
 ] as const;
+// built from a list so the links stay inside the currrent course
 
 export default function CourseMenu({ courseKey }: { courseKey: string }) {
   const pathname = usePathname() ?? "";

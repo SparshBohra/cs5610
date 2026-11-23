@@ -1,4 +1,5 @@
 import { FaPlus, FaSearch } from "react-icons/fa";
+import { assignments } from "../../../database";
 import AssignmentItem from "./AssignmentItem";
 
 export default async function AssignmentList({
@@ -7,26 +8,8 @@ export default async function AssignmentList({
   params: Promise<{ cid: string }>;
 }) {
   const { cid } = await params;
-  const items = [
-    {
-      aid: "123",
-      title: "A1 - ENV + HTML",
-      details:
-        "Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts",
-    },
-    {
-      aid: "124",
-      title: "A2 - CSS + BOOTSTRAP",
-      details:
-        "Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts",
-    },
-    {
-      aid: "125",
-      title: "A3 - JAVASCRIPT + REACT",
-      details:
-        "Multiple Modules | Not available until May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts",
-    },
-  ];
+  // only this course's asignments
+  const items = assignments.filter((a) => a.course === cid);
 
   return (
     <div id="wd-assignments">
@@ -71,11 +54,11 @@ export default async function AssignmentList({
       <ul id="wd-assignment-list" className="m-0 list-none p-0">
         {items.map((item) => (
           <AssignmentItem
-            key={item.aid}
+            key={item._id}
             cid={cid}
-            aid={item.aid}
+            aid={item._id}
             title={item.title}
-            details={item.details}
+            details={`Multiple Modules | Not available until ${item.available} | Due ${item.due} | ${item.points} pts`}
           />
         ))}
       </ul>
