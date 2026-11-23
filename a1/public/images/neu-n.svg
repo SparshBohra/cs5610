@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Northeastern University">
+  <!-- Red badge + white N (reads clearly on the black Kambaz rail) -->
+  <rect width="100" height="100" rx="8" fill="#C8102E" />
+  <text
+    x="50"
+    y="74"
+    text-anchor="middle"
+    font-family="Arial Black, Helvetica Neue, Arial, sans-serif"
+    font-size="78"
+    font-weight="900"
+    fill="#FFFFFF"
+  >N</text>
+</svg>

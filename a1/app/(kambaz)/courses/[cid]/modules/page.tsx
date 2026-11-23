@@ -1,41 +1,50 @@
-function Block({ title, rows }: { title: string; rows: string[] }) {
-  return (
-    <div>
-      <h3>{title}</h3>
-      <ul>
-        {rows.map((row) => (
-          <li key={row}>{row}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+import { modules } from "../../../database";
+import Module from "./Module";
+import Lesson from "./Lesson";
 
-export default function Modules() {
+export default async function Modules({
+  params,
+}: {
+  params: Promise<{ cid: string }>;
+}) {
+  const { cid } = await params;
+  // only modules for this course id
+  const courseMods = modules.filter((m) => m.course === cid);
+
   return (
-    <div id="wd-modules">
-      <h1>Modules</h1>
-      <div id="wd-modules-controls">
-        <button id="wd-add-module-btn" type="button">
+    <div className="wd-modules">
+      <div id="wd-modules-controls" className="mb-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-sm"
+        >
+          Collapse All
+        </button>
+        <button
+          type="button"
+          className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-sm"
+        >
+          View Progress
+        </button>
+        <button
+          id="wd-add-module-btn"
+          type="button"
+          className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white"
+        >
           + Module
         </button>
       </div>
-      <Block
-        title="Week 1, Lecture 1 - Course Introduction, Syllabus, Agenda"
-        rows={[
-          "LEARNING OBJECTIVES",
-          "Introduction to the course",
-          "Learn what is Web Development",
-          "READING",
-          "Full Stack Developer - Chapter 1 - Introduction",
-          "SLIDES",
-          "Introduction to Web Development",
-        ]}
-      />
-      <Block
-        title="Week 1, Lecture 2 - Formatting User Interfaces with HTML"
-        rows={["LEARNING OBJECTIVES", "READING"]}
-      />
+      <ul id="wd-modules" className="m-0 list-none p-0">
+        {courseMods.map((mod) => (
+          <Module key={mod._id} title={mod.name}>
+            <Lesson title={mod.description}>
+              {mod.lessons.map((lesson) => (
+                <li key={lesson._id}>{lesson.name}</li>
+              ))}
+            </Lesson>
+          </Module>
+        ))}
+      </ul>
     </div>
   );
 }

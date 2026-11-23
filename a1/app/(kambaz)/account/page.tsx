@@ -2,12 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { signedIn } from "../session";
+import { signIn } from "../session";
 
 export default function AccountIndex() {
   const router = useRouter();
   useEffect(() => {
-    router.replace(signedIn() ? "/account/profile" : "/account/signin");
+    signIn();
+    router.replace("/account/profile");
   }, [router]);
   return null;
 }

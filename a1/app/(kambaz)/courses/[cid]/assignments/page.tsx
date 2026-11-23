@@ -1,39 +1,66 @@
-import Link from "next/link";
+import { FaPlus, FaSearch } from "react-icons/fa";
+import { assignments } from "../../../database";
+import AssignmentItem from "./AssignmentItem";
 
 export default async function AssignmentList({
   params,
 }: {
   params: Promise<{ cid: string }>;
 }) {
-  const { cid: courseKey } = await params;
-  const folder = `/courses/${courseKey}/assignments`;
+  const { cid } = await params;
+  // only this course's asignments
+  const items = assignments.filter((a) => a.course === cid);
+
   return (
     <div id="wd-assignments">
-      <h1>Assignments</h1>
-      <input id="wd-search-assignment" placeholder="Search for Assignments" />
-      <button id="wd-add-assignment-group" type="button">
-        + Group
-      </button>
-      <button id="wd-add-assignment" type="button">
-        + Assignment
-      </button>
-      <h3 id="wd-assignments-title">ASSIGNMENTS 40% of Total</h3>
-      <ul id="wd-assignment-list">
-        <li>
-          <Link href={`${folder}/123`}>A1 - ENV + HTML</Link>
-          <br />
-          Multiple Modules | Not available until May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts
-        </li>
-        <li>
-          <Link href={`${folder}/124`}>A2 - CSS + BOOTSTRAP</Link>
-          <br />
-          Multiple Modules | Not available until May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts
-        </li>
-        <li>
-          <Link href={`${folder}/125`}>A3 - JAVASCRIPT + REACT</Link>
-          <br />
-          Multiple Modules | Not available until May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts
-        </li>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="relative">
+          <FaSearch className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-neutral-500" />
+          <input
+            placeholder="Search for Assignments"
+            id="wd-search-assignment"
+            className="rounded border py-1.5 pr-3 pl-9 text-sm"
+          />
+        </div>
+        <div className="flex gap-2">
+          <button
+            id="wd-add-assignment-group"
+            type="button"
+            className="inline-flex items-center gap-1 rounded border px-3 py-1.5 text-sm"
+          >
+            <FaPlus /> Group
+          </button>
+          <button
+            id="wd-add-assignment"
+            type="button"
+            className="inline-flex items-center gap-1 rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white"
+          >
+            <FaPlus /> Assignment
+          </button>
+        </div>
+      </div>
+      <h3
+        id="wd-assignments-title"
+        className="mb-3 flex items-center justify-between rounded bg-neutral-200 p-3 text-lg"
+      >
+        <span>ASSIGNMENTS 40% of Total</span>
+        <button
+          type="button"
+          className="inline-flex items-center rounded border bg-white px-2 py-0.5 text-sm"
+        >
+          <FaPlus />
+        </button>
+      </h3>
+      <ul id="wd-assignment-list" className="m-0 list-none p-0">
+        {items.map((item) => (
+          <AssignmentItem
+            key={item._id}
+            cid={cid}
+            aid={item._id}
+            title={item.title}
+            details={`Multiple Modules | Not available until ${item.available} | Due ${item.due} | ${item.points} pts`}
+          />
+        ))}
       </ul>
     </div>
   );
