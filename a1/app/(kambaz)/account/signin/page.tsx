@@ -1,11 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "../../session";
+import * as db from "../../database";
+import { useAccountContext } from "../AccountContext";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
+  const { setCurrentUser } = useAccountContext();
   const router = useRouter();
+
+  const signin = () => {
+    const user = db.users.find(
+      (u) =>
+        u.username === credentials.username &&
+        u.password === credentials.password,
+    );
+    if (!user) return;
+    setCurrentUser(user);
+    router.push("/dashboard");
+  };
 
   return (
     <div id="wd-signin-screen" className="max-w-md">
@@ -15,7 +33,11 @@ export default function Signin() {
       </label>
       <input
         id="wd-username"
-        defaultValue="sparsh"
+        placeholder="username"
+        value={credentials.username}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
         className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
       />
       <label htmlFor="wd-password" className="mb-1 block text-sm">
@@ -23,18 +45,19 @@ export default function Signin() {
       </label>
       <input
         id="wd-password"
+        placeholder="password"
         type="password"
-        defaultValue="123"
+        value={credentials.password}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
         className="mb-4 w-full rounded border border-neutral-300 px-3 py-2"
       />
       <button
-        id="wd-signin-btn"
         type="button"
+        onClick={signin}
+        id="wd-signin-btn"
         className="rounded bg-red-600 px-4 py-2 text-white"
-        onClick={() => {
-          signIn();
-          router.push("/dashboard");
-        }}
       >
         Sign in
       </button>

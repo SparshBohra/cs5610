@@ -1,17 +1,7 @@
-# CS5610
+CS5610 webdev. The Next app is in the a1 folder.
 
-Web Development. Each assignment is its own folder.
-
-## Assignments
-
-- [a1](a1): chapter 1, HTML screens in Next.js
-
-From that folder:
-
-```
 cd a1
 npm install
 npm run dev
-```
 
 Open http://localhost:3000
