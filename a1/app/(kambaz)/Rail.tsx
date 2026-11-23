@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
-import { signIn, signedIn } from "./session";
 
 const LINKS = [
   { label: "Dashboard", path: "/dashboard", icon: AiOutlineDashboard },
@@ -19,16 +17,6 @@ const LINKS = [
 
 export default function Rail() {
   const pathname = usePathname() ?? "";
-  const [, setReady] = useState(false);
-
-  useEffect(() => {
-    // Prototype: stay signed in so Account opens Profile (with Sign out), not Sign in
-    if (!signedIn()) {
-      signIn();
-    }
-    setReady(true);
-  }, [pathname]);
-
   const accountActive = pathname.includes("/account");
 
   return (
@@ -53,7 +41,7 @@ export default function Rail() {
         />
       </a>
       <Link
-        href="/account/profile"
+        href="/account"
         id="wd-account-link"
         className={`block py-3 text-center text-sm no-underline ${
           accountActive ? "bg-white text-red-600" : "bg-black text-white"

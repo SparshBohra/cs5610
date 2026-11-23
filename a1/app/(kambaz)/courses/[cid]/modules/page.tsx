@@ -1,44 +1,55 @@
-import { modules } from "../../../database";
+"use client";
+
+import { useParams } from "next/navigation";
 import Module from "./Module";
 import Lesson from "./Lesson";
+import ModulesControls from "./ModulesControls";
+import ModuleControlButtons from "./ModuleControlButtons";
+import { useModulesStore } from "../../../store/modulesStore";
 
-export default async function Modules({
-  params,
-}: {
-  params: Promise<{ cid: string }>;
-}) {
-  const { cid } = await params;
-  // only modules for this course id
+export default function Modules() {
+  const { cid } = useParams();
+  const modules = useModulesStore((state) => state.modules);
+  const deleteModule = useModulesStore((state) => state.deleteModule);
+  const updateModule = useModulesStore((state) => state.updateModule);
+  const editModule = useModulesStore((state) => state.editModule);
   const courseMods = modules.filter((m) => m.course === cid);
 
   return (
     <div className="wd-modules">
-      <div id="wd-modules-controls" className="mb-4 flex flex-wrap gap-2">
-        <button
-          type="button"
-          className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-sm"
-        >
-          Collapse All
-        </button>
-        <button
-          type="button"
-          className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-sm"
-        >
-          View Progress
-        </button>
-        <button
-          id="wd-add-module-btn"
-          type="button"
-          className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white"
-        >
-          + Module
-        </button>
-      </div>
+      <ModulesControls />
       <ul id="wd-modules" className="m-0 list-none p-0">
         {courseMods.map((mod) => (
-          <Module key={mod._id} title={mod.name}>
+          <Module
+            key={mod._id}
+            title={
+              mod.editing ? (
+                <input
+                  className="w-1/2 rounded border border-neutral-300 px-2 py-1 text-base"
+                  value={mod.name}
+                  onChange={(e) =>
+                    updateModule({ ...mod, name: e.target.value })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      updateModule({ ...mod, editing: false });
+                    }
+                  }}
+                />
+              ) : (
+                mod.name
+              )
+            }
+            extra={
+              <ModuleControlButtons
+                moduleId={mod._id}
+                deleteModule={deleteModule}
+                editModule={editModule}
+              />
+            }
+          >
             <Lesson title={mod.description}>
-              {mod.lessons.map((lesson) => (
+              {(mod.lessons ?? []).map((lesson) => (
                 <li key={lesson._id}>{lesson.name}</li>
               ))}
             </Lesson>

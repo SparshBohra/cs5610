@@ -1,14 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { signIn } from "../session";
+import { redirect } from "next/navigation";
+import { useAccountContext } from "./AccountContext";
 
-export default function AccountIndex() {
-  const router = useRouter();
-  useEffect(() => {
-    signIn();
-    router.replace("/account/profile");
-  }, [router]);
-  return null;
+export default function AccountPage() {
+  const { currentUser } = useAccountContext();
+  if (!currentUser) {
+    redirect("/account/signin");
+  }
+  redirect("/account/profile");
 }

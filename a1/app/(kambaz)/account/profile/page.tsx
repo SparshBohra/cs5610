@@ -1,51 +1,77 @@
 "use client";
 
-import { useEffect } from "react";
-import { FaUserCircle } from "react-icons/fa";
-import { signIn } from "../../session";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAccountContext, type User } from "../AccountContext";
 
 export default function Profile() {
+  const { currentUser } = useAccountContext();
+  const router = useRouter();
+
   useEffect(() => {
-    signIn();
-  }, []);
+    if (!currentUser) {
+      router.push("/account/signin");
+    }
+  }, [currentUser, router]);
+
+  if (!currentUser) return null;
+  return <ProfileForm key={currentUser._id} user={currentUser} />;
+}
+
+function ProfileForm({ user }: { user: User }) {
+  const [profile, setProfile] = useState(user);
+  const { setCurrentUser } = useAccountContext();
+  const router = useRouter();
+
+  const signout = () => {
+    setCurrentUser(null);
+    router.push("/account/signin");
+  };
 
   return (
-    <div id="wd-profile-screen" className="max-w-2xl">
-      <h1 className="mb-6 text-3xl font-normal">User Profile</h1>
-
-      <div className="flex flex-wrap gap-8">
-        <div className="text-center">
-          <FaUserCircle className="mx-auto text-neutral-400" size={120} />
-          <p className="mt-2 text-sm text-neutral-600">Sparsh Bohra</p>
-        </div>
-        <div className="min-w-[260px] flex-1">
-          <h2 className="mb-4 text-2xl font-semibold">Sparsh Bohra</h2>
-          <label className="mb-1 block text-sm">Username</label>
-          <input
-            defaultValue="sparsh"
-            className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
-          />
-          <label className="mb-1 block text-sm">First name</label>
-          <input
-            defaultValue="Sparsh"
-            className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
-          />
-          <label className="mb-1 block text-sm">Last name</label>
-          <input
-            defaultValue="Bohra"
-            className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
-          />
-          <label className="mb-1 block text-sm">Email</label>
-          <input
-            defaultValue="bohra.s@northeastern.edu"
-            className="mb-4 w-full rounded border border-neutral-300 px-3 py-2"
-          />
-          <h3 className="mb-2 text-lg font-semibold">Biography</h3>
-          <p className="text-neutral-700">
-            CS student. Web development, fall 2026.
-          </p>
-        </div>
-      </div>
+    <div id="wd-profile-screen" className="max-w-md">
+      <h1 className="mb-4 text-3xl font-normal">Profile</h1>
+      <label className="mb-1 block text-sm">Username</label>
+      <input
+        id="wd-username"
+        value={profile.username}
+        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+        className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
+      />
+      <label className="mb-1 block text-sm">Password</label>
+      <input
+        id="wd-password"
+        type="password"
+        value={profile.password}
+        onChange={(e) => setProfile({ ...profile, password: e.target.value })}
+        className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
+      />
+      <label className="mb-1 block text-sm">First name</label>
+      <input
+        value={profile.firstName}
+        onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+        className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
+      />
+      <label className="mb-1 block text-sm">Last name</label>
+      <input
+        value={profile.lastName}
+        onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
+        className="mb-3 w-full rounded border border-neutral-300 px-3 py-2"
+      />
+      <label className="mb-1 block text-sm">Email</label>
+      <input
+        value={profile.email}
+        onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+        className="mb-4 w-full rounded border border-neutral-300 px-3 py-2"
+      />
+      <button
+        type="button"
+        onClick={signout}
+        id="wd-signout-btn"
+        className="rounded bg-red-600 px-4 py-2 text-white"
+      >
+        Sign out
+      </button>
     </div>
   );
 }
